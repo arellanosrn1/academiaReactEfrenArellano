@@ -1,8 +1,8 @@
 import './App.css';
-import Login from './Components/Login';
+import Login from './components/login';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Navbar from './Components/Navbar';
-
+import Navbar from './components/Navbar';
+import CrearUsuario from './components/CrearUsuario';
 import { AuthProvider } from './hooks/useAuth';
 import { ProtectedRoute } from './Components/ProtectedRoute';
 
@@ -16,6 +16,7 @@ function App() {
               path='/login'
               element={<Login mail={'efren.arellano@softtek.com'}></Login>}
             />
+            <Route path='/crearUsuario' element={<CrearUsuario></CrearUsuario>} />
             <Route
               path='/navbar'
               element={

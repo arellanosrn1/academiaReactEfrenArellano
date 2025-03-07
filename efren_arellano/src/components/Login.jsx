@@ -10,6 +10,10 @@ export default function Login({ mail }) {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
+  const crearUsuario = () => {
+    navigate('/CrearUsuario');
+  };
+
   useEffect(() => {
     if (user) navigate('/navbar');
   }, [user]);
@@ -28,6 +32,7 @@ export default function Login({ mail }) {
       {JSON.stringify(user)}
       <Row>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+        <p style={{ color: 'black' }}>Usuario</p>
           <Input
             size='small'
             placeholder='Correo del usuario'
@@ -36,6 +41,7 @@ export default function Login({ mail }) {
           ></Input>
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+        <p style={{ color: 'black' }}>Contraseña</p>
           <Input.Password
             size='small'
             placeholder='Contraseña'
@@ -44,8 +50,13 @@ export default function Login({ mail }) {
           />
         </Col>
       </Row>
-
-      <Button onClick={login}>Login</Button>
+      <div style={{ padding: '18px' }}>
+        <Button onClick={login}>Login</Button>
+      </div>
+      <div style={{ padding: '1px', marginTop: '10px' }}>
+        <Button onClick={crearUsuario}>Crear Usuario</Button>
+      </div>
     </div>
+    
   );
 }
