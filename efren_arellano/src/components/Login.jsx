@@ -29,10 +29,12 @@ export default function Login({ mail }) {
   };
   return (
     <div>
-      {JSON.stringify(user)}
+      <div>
+        <h1 style={{ color: 'black' }}>Iniciar Sesión</h1>
+      </div>
       <Row>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-        <p style={{ color: 'black' }}>Usuario</p>
+        <h4 style={{ color: 'black' }}>Usuario</h4>
           <Input
             size='small'
             placeholder='Correo del usuario'
@@ -41,7 +43,7 @@ export default function Login({ mail }) {
           ></Input>
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-        <p style={{ color: 'black' }}>Contraseña</p>
+        <h4 style={{ color: 'black' }}>Contraseña</h4>
           <Input.Password
             size='small'
             placeholder='Contraseña'
@@ -51,10 +53,10 @@ export default function Login({ mail }) {
         </Col>
       </Row>
       <div style={{ padding: '18px' }}>
-        <Button onClick={login}>Login</Button>
+        <Button onClick={login} color='green' variant='solid'>Login</Button>
       </div>
       <div style={{ padding: '1px', marginTop: '10px' }}>
-        <Button onClick={crearUsuario}>Crear Usuario</Button>
+        <Button onClick={crearUsuario} color='blue' variant='solid'>Crear Usuario</Button>
       </div>
     </div>
     

@@ -32,7 +32,7 @@ export default function CrearUsuario() {
       <Row>
         <Col xs={24} sm={24} md={32} lg={32} xl={32}>
           <h1 style={{ color: 'black' }}>Registro de Usuario</h1>
-          <p style={{ color: 'black', textAlign: 'left' }}>Nombre de Usuario</p>
+          <h4 style={{ color: 'black', textAlign: 'left' }}>Nombre de Usuario</h4>
           <Input
             size='small'
             placeholder='Nombre del usuario'
@@ -43,7 +43,7 @@ export default function CrearUsuario() {
       </Row>
       <Row>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-          <p style={{ color: 'black' }}>Escribe tu Correo</p>
+          <h4 style={{ color: 'black' }}>Escribe tu Correo</h4>
           <Input
             size='small'
             placeholder='Correo del usuario'
@@ -52,7 +52,7 @@ export default function CrearUsuario() {
           ></Input>
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-          <p style={{ color: 'black' }}>Crea una Contraseña</p>
+          <h4 style={{ color: 'black' }}>Crea una Contraseña</h4>
           <Input.Password
             size='small'
             placeholder='Contraseña'
@@ -62,7 +62,7 @@ export default function CrearUsuario() {
         </Col>
       </Row>
       <div style={{ padding: '18px' }}>
-        <Button onClick={crearUsuario}>Crear Usuario</Button>
+        <Button onClick={crearUsuario} color='green' variant='solid'>Crear Usuario</Button>
       </div>
     </div>
   );

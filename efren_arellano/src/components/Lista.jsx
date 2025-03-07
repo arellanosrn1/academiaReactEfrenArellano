@@ -1,46 +1,58 @@
-import React, { useEffect, useState } from 'react';
-import { Avatar, Button, List, Skeleton } from 'antd';
-const count = 3 ;
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
-const App = () => {
-  const [initLoading, setInitLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const [list, setList] = useState([]);
+import React, { useState, useEffect } from 'react';
+import { Button, List } from 'antd';
+import { getFirestore, collection, query, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
+
+export default function ListOfTask() {
+  const [tasks, setTasks] = useState([]);
+
   useEffect(() => {
-    fetch(fakeDataUrl)
-      .then((res) => res.json())
-      .then((res) => {
-        setInitLoading(false);
-        setData(res.results);
-        setList(res.results);
+    const firestore = getFirestore();
+    const q = query(collection(firestore, 'tasks'));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const tasksArray = [];
+      querySnapshot.forEach((doc) => {
+        tasksArray.push({ id: doc.id, ...doc.data() });
       });
+      setTasks(tasksArray.reverse());
+    });
+
+    return () => unsubscribe();
   }, []);
+
+  const EliminarTarea = async (taskId) => {
+    const firestore = getFirestore();
+    try {
+      await deleteDoc(doc(firestore, 'tasks', taskId));
+    } catch (error) {
+      console.error('Error eliminando la tarea:', error);
+    }
+  };
 
   return (
     <div>
-        <div style={{textAlign: "right", padding: "18px"}}>
-            <Button color='green' variant='solid'>CREAR TAREA +</Button>
-        </div>
       <List
-        className='demo-loadmore-list'
-        loading={initLoading}
-        itemLayout='horizontal'
-        dataSource={list}
-        renderItem={(item) => (
-          <List.Item
-            actions={[
-              <a key='list-loadmore-edit'>Editar</a>,
-              <a key='list-loadmore-more'>Borrar</a>,
-            ]}
-          >
+        dataSource={tasks}
+        renderItem={(task) => (
+          <List.Item key={task.id}>
             <List.Item.Meta
-              title={<a>Titutlo</a>}
-              description='Nombre Usuario y fecha'
+              title={<span>{task.title}</span>}
+              description={
+                <div>
+                  <span>{task.description}</span>
+                  <br />
+                  <span>{task.email} & {new Date(task.datetime).toLocaleString()}</span>
+                </div>
+              }
             />
-            <div>
-              <Button color='blue' variant='solid'>
+            <div style={{ textAlign: 'right' }}>
+              <Button color='blue' variant='outlined' style={{ marginRight: '15px' }}>
                 Guardar
+              </Button>
+              <a key='edit' style={{ marginRight: '15px' }}>
+                Editar
+              </a>
+              <Button color='red' variant='solid' onClick={() => EliminarTarea(task.id)}>
+                Eliminar
               </Button>
             </div>
           </List.Item>
@@ -48,5 +60,4 @@ const App = () => {
       />
     </div>
   );
-};
-export default App;
+}
