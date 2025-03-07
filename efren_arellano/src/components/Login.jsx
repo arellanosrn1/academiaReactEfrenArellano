@@ -30,7 +30,8 @@ export default function Login({ mail }) {
   return (
     <div>
       <div>
-        <h1 style={{ color: 'black' }}>Iniciar Sesión</h1>
+        <h1 style={{ color: 'black' }}>Softtek@Task</h1>
+        <h2 style={{color: "black", marginTop: "-30px"}}>Academia React</h2>
       </div>
       <Row>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>

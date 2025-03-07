@@ -1,11 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Button, List } from 'antd';
-import { getFirestore, collection, query, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
+import { Button, List, Input } from 'antd';
+import { getFirestore, collection, query, onSnapshot, doc, deleteDoc, updateDoc, getDoc } from 'firebase/firestore';
+import CrearLista from './CrearLista';
+import { getCurrentUser } from '../config/authCall'; // Import the new function
+import firebaseAcademia from '../config/firebaseconfig';
 
 export default function ListOfTask() {
   const [tasks, setTasks] = useState([]);
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editedTitle, setEditedTitle] = useState('');
+  const [editedDescription, setEditedDescription] = useState('');
+  const [permissions, setPermissions] = useState([]);
 
   useEffect(() => {
+    const fetchPermissions = async () => {
+      const firestore = getFirestore(firebaseAcademia);
+      const currentUser = getCurrentUser(); // Get the current user
+      if (currentUser) {
+        const userDoc = await getDoc(doc(firestore, 'users', currentUser.uid));
+        console.log(currentUser, currentUser.uid);
+        if (userDoc.exists()) {
+          setPermissions(userDoc.data().permissions);
+        }
+      }
+    };
+
+    fetchPermissions();
+
     const firestore = getFirestore();
     const q = query(collection(firestore, 'tasks'));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -19,41 +40,99 @@ export default function ListOfTask() {
     return () => unsubscribe();
   }, []);
 
-  const EliminarTarea = async (taskId) => {
+  const handleDelete = async (taskId) => {
     const firestore = getFirestore();
     try {
       await deleteDoc(doc(firestore, 'tasks', taskId));
+      alert('Tarea eliminada exitosamente');
     } catch (error) {
       console.error('Error eliminando la tarea:', error);
     }
   };
 
+  const handleEdit = (task) => {
+    setEditingTaskId(task.id);
+    setEditedTitle(task.title);
+    setEditedDescription(task.description);
+  };
+
+  const handleSave = async (taskId) => {
+    const firestore = getFirestore();
+    try {
+      await updateDoc(doc(firestore, 'tasks', taskId), {
+        title: editedTitle,
+        description: editedDescription,
+      });
+      setEditingTaskId(null);
+    } catch (error) {
+      console.error('Error actualizando la tarea:', error);
+    }
+  };
+
   return (
     <div>
+      {(permissions.includes('write') || permissions.includes('admin')) && <CrearLista />}
       <List
         dataSource={tasks}
         renderItem={(task) => (
           <List.Item key={task.id}>
             <List.Item.Meta
-              title={<span>{task.title}</span>}
+              title={
+                editingTaskId === task.id ? (
+                  <Input
+                    value={editedTitle}
+                    onChange={(e) => setEditedTitle(e.target.value)}
+                  />
+                ) : (
+                  <span>{task.title}</span>
+                )
+              }
               description={
                 <div>
-                  <span>{task.description}</span>
+                  {editingTaskId === task.id ? (
+                    <Input
+                      value={editedDescription}
+                      onChange={(e) => setEditedDescription(e.target.value)}
+                    />
+                  ) : (
+                    <span>{task.description}</span>
+                  )}
                   <br />
-                  <span>{task.email} & {new Date(task.datetime).toLocaleString()}</span>
+                  <span>{task.email} | {new Date(task.datetime).toLocaleString()}</span>
                 </div>
               }
             />
             <div style={{ textAlign: 'right' }}>
-              <Button color='blue' variant='outlined' style={{ marginRight: '15px' }}>
-                Guardar
-              </Button>
-              <a key='edit' style={{ marginRight: '15px' }}>
-                Editar
-              </a>
-              <Button color='red' variant='solid' onClick={() => EliminarTarea(task.id)}>
-                Eliminar
-              </Button>
+              {(permissions.includes('write') || permissions.includes('admin')) && editingTaskId === task.id ? (
+                <Button
+                  color='green'
+                  variant='outlined'
+                  style={{ marginRight: '15px' }}
+                  onClick={() => handleSave(task.id)}
+                >
+                  Guardar
+                </Button>
+              ) : (
+                (permissions.includes('write') || permissions.includes('admin')) && (
+                  <Button
+                    color='blue'
+                    variant='outlined'
+                    style={{ marginRight: '15px' }}
+                    onClick={() => handleEdit(task)}
+                  >
+                    Editar
+                  </Button>
+                )
+              )}
+              {(permissions.includes('delete') || permissions.includes('admin')) && (
+                <Button
+                  color='red'
+                  variant='solid'
+                  onClick={() => handleDelete(task.id)}
+                >
+                  Eliminar
+                </Button>
+              )}
             </div>
           </List.Item>
         )}

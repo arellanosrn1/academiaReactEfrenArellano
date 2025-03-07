@@ -52,3 +52,8 @@ export const userListener = (listener) => {
     listener(user);
   });
 };
+
+// New function to get the current user
+export const getCurrentUser = () => {
+  return auth.currentUser;
+};

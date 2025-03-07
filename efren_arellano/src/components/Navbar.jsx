@@ -4,7 +4,6 @@ import { LogoutOutlined } from '@ant-design/icons';
 import { readData } from '../config/realtimeCalls';
 import { readDataFirestore } from '../config/firestoreCalls';
 import Lista from './Lista';
-import CrearLista from './CrearLista';
 
 export default function Navbar() {
   const { logout, user } = useAuth();
@@ -28,7 +27,6 @@ export default function Navbar() {
       <div style={{ textAlign: 'right', color: "black" }}>
         {localUser && <>{localUser.name}</>} <LogoutOutlined onClick={logout} />
       </div>
-      <CrearLista />
       <Lista />
     </div>
   );
