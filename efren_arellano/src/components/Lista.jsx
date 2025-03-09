@@ -73,6 +73,7 @@ export default function ListOfTask() {
     <div>
       {(permissions.includes('write') || permissions.includes('admin')) && <CrearLista />}
       <List
+       style={{ border: "2px solid #ddd", borderRadius: "20px"}}
         dataSource={tasks}
         renderItem={(task) => (
           <List.Item key={task.id}>
@@ -102,7 +103,7 @@ export default function ListOfTask() {
                 </div>
               }
             />
-            <div style={{ textAlign: 'right' }}>
+            <div style={{ textAlign: 'right', paddingRight: "50px" }}>
               {(permissions.includes('write') || permissions.includes('admin')) && editingTaskId === task.id ? (
                 <Button
                   color='green'

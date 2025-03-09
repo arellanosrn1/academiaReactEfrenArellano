@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Col, Input, Row } from 'antd';
 import { createUser } from '../config/authCall';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 export default function CrearUsuario() {
+  const { user } = useAuth();
   const [createEmail, setCreateEmail] = useState('');
   const [createPassword, setCreatePassword] = useState('');
   const [createUserName, setCreateName] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+      if (user) navigate('/navbar');
+    }, [user]);
+  
+  const inicioSesion = () => {
+    navigate('/login');
+  };
 
   const changeCreateEmail = (inputvalue) => {
     setCreateEmail(inputvalue.target.value);
@@ -21,7 +31,6 @@ export default function CrearUsuario() {
   const crearUsuario = async () => {
     try {
       await createUser(createEmail, createPassword, createUserName);
-      navigate('/navbar'); // Redirige a la página de Navbar después de crear el usuario
     } catch (error) {
       console.error('Error creating user:', error);
     }
@@ -63,6 +72,9 @@ export default function CrearUsuario() {
       </Row>
       <div style={{ padding: '18px' }}>
         <Button onClick={crearUsuario} color='green' variant='solid'>Crear Usuario</Button>
+      </div>
+      <div style={{ padding: '1px', marginTop: '10px' }}>
+        <Button onClick={inicioSesion} color='blue' variant='solid'>Login</Button>
       </div>
     </div>
   );
