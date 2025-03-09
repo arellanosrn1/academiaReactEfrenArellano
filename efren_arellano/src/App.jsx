@@ -1,5 +1,5 @@
 import './App.css';
-import Login from './components/login';
+import Login from './components/Login';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import CrearUsuario from './components/CrearUsuario';
@@ -25,7 +25,13 @@ function App() {
                 </ProtectedRoute>
               }
             />
-     
+            <Route
+              path='/'
+              element={
+                <ProtectedRoute>
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
